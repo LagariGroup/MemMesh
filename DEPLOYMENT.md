@@ -2,13 +2,13 @@
 
 This guide covers production self-hosting of the MemMesh daemon, secure cross-machine connectivity over private mesh networks, and backup/restore procedures.
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 1\. Network Topology &amp; Mesh Configuration
 
 MemMesh is designed to avoid exposing open ports to the public internet. Instead, all traffic routes over an encrypted peer-to-peer mesh network (WireGuard-based) such as **NetBird** or **Tailscale**.
 
-```
+```text
   [Laptop: Dev Machine]             [Workstation: Secondary]
   NetBird IP: 100.64.0.10          NetBird IP: 100.64.0.12
            │                                 │
@@ -28,18 +28,18 @@ MemMesh is designed to avoid exposing open ports to the public internet. Instead
 3. In MemMesh's configuration, set: `MEMMESH_LISTEN_ADDR=100.64.0.5:8740` (or `0.0.0.0:8740`).
 4. Ensure internal firewall rules (e.g., `ufw`) allow traffic on port 8740 exclusively across the mesh interface (`wt0` for NetBird or `tailscale0` for Tailscale):
 
-```
+```bash
 sudo ufw allow in on wt0 to any port 8740 proto tcp
 
 ```
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 2\. Docker Compose Deployment (Recommended)
 
 ### `docker-compose.yml`
 
-```
+```yaml
 version: '3.8'
 
 services:
@@ -71,14 +71,14 @@ services:
 
 ### Environment Variables (`.env`)
 
-```
+```bash
 MEMMESH_AUTH_TOKEN=generate-a-64-character-hex-string
 MEMMESH_LISTEN_ADDR=0.0.0.0:8740
 MEMMESH_LOG_LEVEL=info
 
 ```
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 3\. Native Linux Service Deployment (systemd)
 
@@ -86,7 +86,7 @@ For running natively on a Raspberry Pi 5, mini PC, or Linux server:
 
 1. Download the binary:
 
-```
+```bash
 sudo curl -Lo /usr/local/bin/memmesh https://github.com/memmesh/memmesh/releases/latest/download/memmesh-linux-arm64
 sudo chmod +x /usr/local/bin/memmesh
 
@@ -94,7 +94,7 @@ sudo chmod +x /usr/local/bin/memmesh
 
 1. Create dedicated system user and data directory:
 
-```
+```bash
 sudo useradd -r -s /bin/false memmesh
 sudo mkdir -p /var/lib/memmesh/vault
 sudo chown -R memmesh:memmesh /var/lib/memmesh
@@ -103,7 +103,7 @@ sudo chown -R memmesh:memmesh /var/lib/memmesh
 
 1. Create systemd unit `/etc/systemd/system/memmesh.service`:
 
-```
+```ini
 [Unit]
 Description=MemMesh Agent Memory Daemon
 After=network.target netbird.service tailscaled.service
@@ -127,13 +127,13 @@ WantedBy=multi-user.target
 
 1. Enable and start:
 
-```
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable --now memmesh
 
 ```
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 4\. Backups &amp; Disaster Recovery
 
@@ -143,7 +143,7 @@ SQLite's WAL mode allows real-time, transaction-level streaming backups with zer
 
 Add a `litestream.yml` configuration:
 
-```
+```yaml
 dbs:
   - path: /data/memmesh.db
     replicas:
@@ -158,7 +158,7 @@ dbs:
 
 The `.memmesh/vault/` directory is updated synchronously whenever semantic records are written. You can track this directory using Git:
 
-```
+```bash
 cd /var/lib/memmesh/vault
 git init
 git remote add origin git@github.com:your-user/agent-memory-vault.git
@@ -166,9 +166,10 @@ git remote add origin git@github.com:your-user/agent-memory-vault.git
 
 ```
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 5\. Security &amp; Authentication Model
 
 1. **Pre-Shared Bearer Tokens**:
-  * Every request to `/v1/*` and `/sse` must include `Authorization: Bearer
+
+   * Every request to `/v1/*` and `/sse` must include `Authorization: Bearer

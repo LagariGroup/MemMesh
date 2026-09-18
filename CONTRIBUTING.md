@@ -2,7 +2,7 @@
 
 Thank you for contributing to MemMesh! This document details internal design decisions, repository structure, local development environment setup, and coding conventions.
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 1\. Deep Dive into Internal Architecture
 
@@ -25,7 +25,7 @@ Traditional vector databases (Pinecone, Milvus, Qdrant cluster) introduce signif
 
 Hybrid search combines text search and vector search results using Reciprocal Rank Fusion:
 
-```
+```text
 RRF_Score(doc) = (1 / (60 + Rank_Vector(doc))) + (1 / (60 + Rank_BM25(doc)))
 
 ```
@@ -41,11 +41,11 @@ A background thread periodically processes unindexed episodic memory traces:
 3. Synthesizes concise semantic facts.
 4. Prunes expired working memory and scratchpad items whose `ttl_seconds` has elapsed.
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 2\. Monorepo Structure
 
-```
+```text
 memmesh/
 ├── Cargo.toml                  # Workspace root
 ├── crates/
@@ -66,7 +66,7 @@ memmesh/
 
 ```
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 3\. Local Development Setup
 
@@ -79,7 +79,7 @@ memmesh/
 
 ### Build Steps
 
-```
+```bash
 # 1. Clone the repo
 git clone https://github.com/memmesh/memmesh.git
 cd memmesh
@@ -99,27 +99,34 @@ cargo run -p memmesh-cli -- daemon start --port 8740 --dev
 
 MemMesh includes a suite of automated MCP test vectors to ensure compatibility with Claude, Antigravity, and OpenCode:
 
-```
+```bash
 cargo test -p memmesh-server --test mcp_compliance
 
 ```
 
-\-------------------------------------------------------------------------------- 
+\--------------------------------------------------------------------------------
 
 ## 4\. Coding Standards &amp; PR Guidelines
 
 1. **Safety &amp; Concurrency**:
-  * SQLite access must use connection pools with serialized writes and parallel readers (`WAL` mode).
-  * Never block the async runtime (`tokio`) with heavy vector calculations; always use `tokio::task::spawn_blocking` for ONNX inference.
-2. **Error Handling**:
-  * Use strongly typed error enums (`thiserror`) inside crates.
-  * Return clean, actionable error strings over the MCP protocol.
-3. **Commit Messages**:
-  * Follow Conventional Commits: `feat:`, `fix:`, `docs:`, `perf:`, `refactor:`.
-4. **Documentation**:
-  * Any new MCP tool or REST endpoint must be documented in both `API_AND_MCP_SPEC.md` and the OpenAPI generator tests.
 
-\-------------------------------------------------------------------------------- 
+   * SQLite access must use connection pools with serialized writes and parallel readers (`WAL` mode).
+   * Never block the async runtime (`tokio`) with heavy vector calculations; always use `tokio::task::spawn_blocking` for ONNX inference.
+
+1. **Error Handling**:
+
+   * Use strongly typed error enums (`thiserror`) inside crates.
+   * Return clean, actionable error strings over the MCP protocol.
+
+1. **Commit Messages**:
+
+   * Follow Conventional Commits: `feat:`, `fix:`, `docs:`, `perf:`, `refactor:`.
+
+1. **Documentation**:
+
+   * Any new MCP tool or REST endpoint must be documented in both `API_AND_MCP_SPEC.md` and the OpenAPI generator tests.
+
+\--------------------------------------------------------------------------------
 
 ## 5\. Community &amp; Code of Conduct
 

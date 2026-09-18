@@ -1,37 +1,26 @@
 # MemMesh Protocol & API Reference Manual
 
-
-
 This document defines the formal communication specifications for MemMesh across Model Context Protocol (MCP) tools and REST/SSE API endpoints.
 
 ---
 
-### 1. Model Context Protocol (MCP) Specification
-
-
+## 1. Model Context Protocol (MCP) Specification
 
 MemMesh runs as a compliant MCP server supporting both stdio and sse transports.
 
-#### Transport Details
-
-
+### Transport Details
 
 * **Stdio**: Invoked locally via `memmesh mcp-stdio` (useful for local desktop agents like Claude Desktop).
 
-
 * **SSE (Server-Sent Events)**: Network-accessible via `http://<host>:8740/sse` with bidirectional messaging via `POST http://<host>:8740/messages?sessionId=<uuid>`.
-
-
 
 ---
 
-#### 1.1 MCP Tool: `memory_recall`
+### 1.1 MCP Tool: `memory_recall`
 
 Searches persistent semantic, procedural, and episodic memory using hybrid vector + keyword matching.
 
-##### Parameters (JSON Schema)
-
-
+#### Parameters (JSON Schema) — memory_recall
 
 ```json
 {
@@ -64,9 +53,7 @@ Searches persistent semantic, procedural, and episodic memory using hybrid vecto
 
 ```
 
-##### Return Value
-
-
+#### Return Value
 
 ```json
 {
@@ -90,13 +77,11 @@ Searches persistent semantic, procedural, and episodic memory using hybrid vecto
 
 ---
 
-#### 1.2 MCP Tool: `memory_store`
+### 1.2 MCP Tool: `memory_store`
 
 Records a persistent memory record into the system.
 
-##### Parameters (JSON Schema)
-
-
+#### Parameters (JSON Schema) — memory_store
 
 ```json
 {
@@ -137,37 +122,27 @@ Records a persistent memory record into the system.
 
 ---
 
-#### 1.3 MCP Tool: `memory_handoff`
+### 1.3 MCP Tool: `memory_handoff`
 
 Writes an active handoff record tagged for a target agent.
 
 * **Inputs**:
 
-
 * `target_agent` (string, required)
-
 
 * `task_summary` (string, required)
 
-
 * `next_steps` (string array, optional)
-
 
 * `associated_files` (string array, optional)
 
-
-
-
-
 ---
 
-#### 1.4 MCP Tool: `memory_consume_handoff`
+### 1.4 MCP Tool: `memory_consume_handoff`
 
 Retrieves and acknowledges pending handoff tickets directed to the invoking agent.
 
-##### Parameters (JSON Schema)
-
-
+#### Parameters (JSON Schema) — memory_consume_handoff
 
 ```json
 {
@@ -185,23 +160,15 @@ Retrieves and acknowledges pending handoff tickets directed to the invoking agen
 
 ---
 
-### 2. REST & Streaming API Specification
-
-
+## 2. REST & Streaming API Specification
 
 All REST endpoints require the HTTP header: `Authorization: Bearer <MEMMESH_AUTH_TOKEN>`
 
-#### 2.1 System Health
-
-
+### 2.1 System Health
 
 * **`GET /health`**
 
 * **Response (`200 OK`)**:
-
-
-
-
 
 ```json
 {
@@ -217,21 +184,13 @@ All REST endpoints require the HTTP header: `Authorization: Bearer <MEMMESH_AUTH
 
 ```
 
-#### 2.2 Memory Storage & Retrieval
-
-
+### 2.2 Memory Storage & Retrieval
 
 * **`POST /v1/memories`**: Creates a memory record and initiates async vector indexing and Markdown mirror generation.
 
-
 * **`POST /v1/memories/search`**: Performs hybrid query search.
 
-
 * **Request Body**:
-
-
-
-
 
 ```json
 {
@@ -244,31 +203,19 @@ All REST endpoints require the HTTP header: `Authorization: Bearer <MEMMESH_AUTH
 
 * **`GET /v1/memories/:id`**: Returns full metadata, content, and provenance of a specific record.
 
-
 * **`DELETE /v1/memories/:id`**: Deletes record from SQLite, vector index, and Markdown vault.
 
-
-
-#### 2.3 Inter-Agent Handoff Queue
-
-
+### 2.3 Inter-Agent Handoff Queue
 
 * **`POST /v1/handoffs`**: Creates a pending task handoff ticket.
 
-
 * **`GET /v1/handoffs/pending?agent=<agent_name>`** (or `GET /v1/handoffs/:agent`): Returns list of unconsumed handoff tickets for the specified agent.
-
 
 * **`POST /v1/handoffs/:id/consume`**: Marks the handoff ticket as consumed by the recipient agent.
 
-
-
-#### 2.4 Server-Sent Events (SSE) Stream
-
-
+### 2.4 Server-Sent Events (SSE) Stream
 
 * **`GET /v1/events/sse`**: Emits real-time event notifications:
-
 
 * `event: memory_created`
 

@@ -1,20 +1,14 @@
 # MemMesh Multi-Agent Configuration Manual
 
-
-
 Step-by-step instructions for integrating MemMesh into each target agent harness across machines.
 
 ---
 
-### 1. Claude Code (Anthropic CLI)
-
-
+## 1. Claude Code (Anthropic CLI)
 
 Claude Code supports native MCP servers and custom CLI environment variables.
 
-#### Option A: Registering as an MCP Server (Recommended)
-
-
+### Option A: Registering as an MCP Server (Recommended)
 
 Run inside your terminal on any connected machine:
 
@@ -30,9 +24,7 @@ claude mcp list
 
 ```
 
-#### Option B: Automatic Context Pre-Injection
-
-
+### Option B: Automatic Context Pre-Injection
 
 Add a wrapper or project hook to inject relevant memories at session start.
 
@@ -49,13 +41,9 @@ Claude Code will automatically receive repository conventions and recent handoff
 
 ---
 
-### 2. Claude Desktop & Claude CoWork
+## 2. Claude Desktop & Claude CoWork
 
-
-
-#### Claude Desktop
-
-
+### Claude Desktop
 
 In `~/.config/Claude/claude_desktop_config.json` (Linux) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS):
 
@@ -71,36 +59,25 @@ In `~/.config/Claude/claude_desktop_config.json` (Linux) or `~/Library/Applicati
 
 ```
 
-#### Claude CoWork
-
-
+### Claude CoWork
 
 In your Claude CoWork workspace settings:
 
 1. Navigate to **Workspace Settings** > **Integrations** > **Model Context Protocol (MCP)**.
 
-
 2. Select **Add Custom Server (SSE)**.
-
 
 3. Provide URL: `http://<mesh-host-ip>:8740/sse`.
 
-
 4. Enter Bearer Token under Authorization Headers.
-
-
 
 ---
 
-### 3. Google Antigravity, Antigravity-CLI & Antigravity-IDE
-
-
+## 3. Google Antigravity, Antigravity-CLI & Antigravity-IDE
 
 Antigravity natively implements MCP tools and session environments.
 
-#### Antigravity-IDE
-
-
+### Antigravity-IDE
 
 Add to your global or workspace configuration (`~/.antigravity/settings.json`):
 
@@ -120,9 +97,7 @@ Add to your global or workspace configuration (`~/.antigravity/settings.json`):
 
 ```
 
-#### Antigravity-CLI
-
-
+### Antigravity-CLI
 
 When executing commands via terminal:
 
@@ -137,9 +112,7 @@ memmesh inject | antigravity run --prompt "Implement database migration for user
 
 ---
 
-### 4. OpenCode
-
-
+## 4. OpenCode
 
 In your repository root or global config (`~/.config/opencode/config.json` or `./opencode.json`):
 
@@ -162,15 +135,11 @@ OpenCode will detect `memory_recall`, `memory_store`, and `memory_handoff` as ca
 
 ---
 
-### 5. Hermes Agent
-
-
+## 5. Hermes Agent
 
 Hermes Agent connects directly to custom tool definitions and respects persona guidelines in `SOUL.md`.
 
-#### Step 1: Add Tool Definition to Hermes Config (`tools.yaml`)
-
-
+### Step 1: Add Tool Definition to Hermes Config (`tools.yaml`)
 
 ```yaml
 tools:
@@ -185,9 +154,7 @@ tools:
 
 ```
 
-#### Step 2: System Persona Guidance (`SOUL.md`)
-
-
+### Step 2: System Persona Guidance (`SOUL.md`)
 
 Add the following instruction block:
 
@@ -201,9 +168,7 @@ Add the following instruction block:
 
 ---
 
-### 6. OpenAI Codex CLI
-
-
+## 6. OpenAI Codex CLI
 
 Create a shell wrapper script (`codex-mem`):
 
@@ -216,11 +181,8 @@ codex --context "$CONTEXT" "$@"
 
 ---
 
-### 7. Paperclip & Pi
-
-
+## 7. Paperclip & Pi
 
 * **Paperclip**: Import the MemMesh OpenAPI spec into Paperclip tool bindings.
-
 
 * **Pi**: Run a lightweight Python daemon client querying `http://<mesh-ip>:8740/v1/memories/search`.

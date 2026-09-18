@@ -1,6 +1,6 @@
 # MemMesh: Universal Agent Memory Fabric
 
-**Open-Source, Local-First, Cross-Machine Agent Memory System**
+## Open-Source, Local-First, Cross-Machine Agent Memory System
 
 Unifying memory across Claude Code, Claude Desktop, Antigravity, OpenCode, Codex, Hermes, Paperclip, and Pi.
 
