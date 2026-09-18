@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/memmesh-core",
+    "crates/memmesh-storage",
+    "crates/memmesh-server",
+    "crates/memmesh-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Jacques Murray"]
+license = "Apache-2.0"
+
+[workspace.dependencies]
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1.38", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.8", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rusqlite = { version = "0.31", features = ["bundled"] }
+axum = { version = "0.7", features = ["macros"] }
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+clap = { version = "4.5", features = ["derive", "env"] }
+futures = "0.3"
+tokio-stream = "0.1"
